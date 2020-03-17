@@ -54,7 +54,7 @@ class MainViewModel(
         viewModelScope.launch {
             errorState.postValue(_errorState.copy(isLoading = true))
             val result = dataSource.getData(page)
-            delay(1000) // to check loading
+            // delay(1000) // to check loading
             handleResult(result)
         }
     }
