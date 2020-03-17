@@ -4,43 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
-            name="vm"
-            type="com.akash.recyclerviewtest.ui.LoadingItem" />
+            name="errorState"
+            type="com.akash.recyclerviewtest.ui.ErrorState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ProgressBar
+            android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:goneIfFalse="@{vm.loading}"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:goneIfFalse="@{errorState.isLoading}" />
 
         <TextView
             android:id="@+id/tv_error"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Error Message"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{vm.errorMessage}"
-            app:goneIfFalse="@{!vm.loading}"/>
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@{errorState.errorMessage}"
+            app:goneIfFalse="@{!errorState.isLoading &amp;&amp; errorState.isError}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/progress"
+            tools:text="Error message goes here" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:clickable="true"
             android:focusable="true"
-            android:onClick="@{() ->vm.onRetry()}"
-            app:goneIfFalse="@{!vm.loading}"
+            android:onClick="@{() ->errorState.onRetry()}"
+            app:goneIfFalse="@{!errorState.isLoading &amp;&amp; errorState.isError &amp;&amp; errorState.showRetry}"
             android:foreground="?attr/selectableItemBackground"
             android:paddingStart="20dp"
             android:paddingTop="10dp"

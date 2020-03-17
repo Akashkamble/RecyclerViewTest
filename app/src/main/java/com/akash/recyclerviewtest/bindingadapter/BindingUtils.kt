@@ -1,5 +1,6 @@
 package com.akash.recyclerviewtest.bindingadapter
 
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import coil.request.CachePolicy
 import com.akash.recyclerviewtest.base.BaseRowModel
-import com.akash.recyclerviewtest.ui.LoadMoreListener
+import com.akash.recyclerviewtest.callbacks.LoadMoreListener
 import com.akash.recyclerviewtest.ui.RecyclerViewBindingAdapter
 
 /**
@@ -42,4 +43,9 @@ fun ImageView.loadUrl(url: String) {
     this.load(url) {
         memoryCachePolicy(CachePolicy.READ_ONLY)
     }
+}
+
+@BindingAdapter("goneIfFalse")
+fun View.goneifFalse(isVisible: Boolean) {
+    visibility = if (isVisible) View.VISIBLE else View.GONE
 }

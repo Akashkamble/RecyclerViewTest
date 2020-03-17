@@ -8,6 +8,8 @@ import com.akash.recyclerviewtest.api.Result
 import com.akash.recyclerviewtest.api.data.Data
 import com.akash.recyclerviewtest.base.BaseRowModel
 import com.akash.recyclerviewtest.base.BaseViewModel
+import com.akash.recyclerviewtest.callbacks.ErrorStateRetryListener
+import com.akash.recyclerviewtest.callbacks.LoadMoreListener
 import com.akash.recyclerviewtest.repository.DataSource
 import com.akash.recyclerviewtest.ui.*
 import kotlinx.coroutines.delay
@@ -16,7 +18,9 @@ import kotlinx.coroutines.launch
 /**
  * Created by Akash on 2020-03-16
  */
-class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadMoreListener {
+class MainViewModel(
+    private val dataSource: DataSource
+) : BaseViewModel(), LoadMoreListener, ErrorStateRetryListener {
 
     private var page = 1
     private var totalPageCount = 0
@@ -25,9 +29,18 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
         getDataForPage(page++)
     }
 
+    private val _isLoading = MutableLiveData<Boolean>().apply { value = true }
+    fun isLoading(): LiveData<Boolean> = _isLoading
+
+    private val _errorState = ErrorState(this as ErrorStateRetryListener)
+    val errorState = MutableLiveData<ErrorState>().apply { value = _errorState }
+
     private var tempList = mutableListOf<BaseRowModel>()
     private val mutableList = MutableLiveData<List<BaseRowModel>>().apply { value = emptyList() }
-    private val loadingItem = LoadingItem()
+
+    // Add this loadingItem in Pagination.
+    private val loadingItem = LoadingItem(this)
+
     private var loadMoreData = false
     private var totalCount = MutableLiveData<Int>().apply { value = 0 }
     private val totalOfferTillNow = MutableLiveData<Int>().apply { value = 0 }
@@ -38,10 +51,10 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
     fun getList(): LiveData<List<BaseRowModel>> = mutableList
 
     private fun getDataForPage(page: Int) {
-
         viewModelScope.launch {
+            errorState.postValue(_errorState.copy(isLoading = true))
             val result = dataSource.getData(page)
-//            delay(1000) to check loading
+            delay(1000) // to check loading
             handleResult(result)
         }
     }
@@ -50,11 +63,23 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
         loadMoreData = when (result) {
             is Result.Success -> {
                 makeList(result.data)
+                errorState.value = _errorState.copy(isLoading = false)
+                _isLoading.value = false
                 true
             }
             is Result.Error -> {
                 Log.d(TAG, "result -> ${result.errorMessage}")
-                if (page > 2) page--
+                if (page > 1) {
+                    loadingItem.showLoding(false)
+                    loadingItem.setErrorMessage(result.errorMessage)
+                }
+                errorState.value = _errorState.copy(
+                    isError = true,
+                    errorMessage = result.errorMessage,
+                    showRetry = result.showRetry
+                )
+                // Decrement page count so after retry we can get data of current page.
+                if (page >= 2) page--
                 false
             }
         }
@@ -75,6 +100,7 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
         }
         for (element in verticalList) {
             if (tempList.size > 9 && tempList.size % 9 == 0) {
+                // This is to add BannerItem in every position divisible by 9
                 tempList.add(tempList.size, BannerItem(data.response.bannerImage))
             }
             tempList.add(VerticalListItem(element))
@@ -84,6 +110,7 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
                 tempList.add(BannerItem(data.response.bannerImage))
             }
         }
+        // Remove LoadingItem from list to after getting result
         if (tempList.contains(loadingItem)) {
             tempList.remove(loadingItem)
         }
@@ -97,6 +124,10 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
                 tempList.add(tempList.size, loadingItem)
                 mutableList.value = tempList
             }
+        getDataForPage(page++)
+    }
+
+    override fun onRetry() {
         getDataForPage(page++)
     }
 }

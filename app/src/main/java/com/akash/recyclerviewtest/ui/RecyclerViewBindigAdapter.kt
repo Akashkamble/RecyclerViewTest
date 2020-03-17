@@ -1,15 +1,13 @@
 package com.akash.recyclerviewtest.ui
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.akash.recyclerviewtest.base.BaseRowModel
 import com.akash.recyclerviewtest.BR
+import com.akash.recyclerviewtest.callbacks.LoadMoreListener
 
 /**
  * Created by Akash on 2020-03-16
