@@ -62,7 +62,18 @@ class MainViewModel(
     private fun handleResult(result: Result<Data.LanguageData>) {
         loadMoreData = when (result) {
             is Result.Success -> {
-                makeList(result.data)
+                val data = result.data
+                totalCount.value = data.response.totalItems
+                totalOfferTillNow.value = totalOfferTillNow.value!! + data.response.list.size
+                totalPageCount = data.response.totalPages
+                ListUtil.makeList(data, tempList)
+
+                // Remove LoadingItem from list to after getting result
+                if (tempList.contains(loadingItem)) {
+                    tempList.remove(loadingItem)
+                }
+                mutableList.value = tempList
+
                 errorState.value = _errorState.copy(isLoading = false)
                 _isLoading.value = false
                 true
@@ -85,46 +96,14 @@ class MainViewModel(
         }
     }
 
-    private fun makeList(data: Data.LanguageData) {
-        Log.d(TAG, "result -> $data")
-        val verticalList = data.response.list
-        totalOfferTillNow.postValue(totalOfferTillNow.value!! + verticalList.size)
-        totalCount.postValue(data.response.totalItems)
-        totalPageCount = data.response.totalPages
-        val horizontalList = data.response.horizontalList ?: emptyList()
-        val horizontalBaseRowModel = mutableListOf<HorizontalChildItem>()
-        if (horizontalList.isNotEmpty()) {
-            for (element in horizontalList) {
-                horizontalBaseRowModel.add(HorizontalChildItem(element))
-            }
-        }
-        for (element in verticalList) {
-            if (tempList.size > 9 && tempList.size % 9 == 0) {
-                // This is to add BannerItem in every position divisible by 9
-                tempList.add(tempList.size, BannerItem(data.response.bannerImage))
-            }
-            tempList.add(VerticalListItem(element))
-            if (tempList.size == 3 && horizontalList.isNotEmpty())
-                tempList.add(HorizontalItem(horizontalBaseRowModel))
-            if (tempList.size == 8) {
-                tempList.add(BannerItem(data.response.bannerImage))
-            }
-        }
-        // Remove LoadingItem from list to after getting result
-        if (tempList.contains(loadingItem)) {
-            tempList.remove(loadingItem)
-        }
-        mutableList.value = tempList
-        Log.d(TAG, "tempList -> $tempList")
-    }
-
     override fun onLoadMore() {
-        if (page <= totalPageCount && loadMoreData)
+        if (page <= totalPageCount && loadMoreData){
             if (tempList.isNotEmpty() && !tempList.contains(loadingItem)) {
                 tempList.add(tempList.size, loadingItem)
                 mutableList.value = tempList
             }
-        getDataForPage(page++)
+            getDataForPage(page++)
+        }
     }
 
     override fun onRetry() {
