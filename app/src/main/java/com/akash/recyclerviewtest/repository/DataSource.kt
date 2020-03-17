@@ -1,7 +1,7 @@
 package com.akash.recyclerviewtest.repository
 
 import com.akash.recyclerviewtest.api.data.Data
-import com.akash.recyclerviewtest.api.Result
+import com.akash.recyclerviewtest.base.Result
 
 /**
  * Created by Akash on 2020-03-16

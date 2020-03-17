@@ -15,6 +15,12 @@ import com.akash.recyclerviewtest.ui.RecyclerViewBindingAdapter
  * Created by Akash on 2020-03-16
  */
 
+
+/**
+ * @param listData which will be list of BaseRowModel.
+ * @param orientation which will decide if RecyclerView is Horizontal or Vertical.
+ * @param listener this parameter will invoke onLoadMore() method for pagination.
+ */
 @BindingAdapter("rowData", "orientation", "loadMoreListener", requireAll = false)
 fun RecyclerView.setRowData(listData: List<BaseRowModel>, orientation: Int, listener: LoadMoreListener?) {
     if (listData.isEmpty()) return
@@ -37,7 +43,9 @@ fun RecyclerView.setRowData(listData: List<BaseRowModel>, orientation: Int, list
     }
 }
 
-
+/**
+ * @param url this will be the url of image we want to display in ImageView.
+ */
 @BindingAdapter("loadUrl")
 fun ImageView.loadUrl(url: String) {
     this.load(url) {
@@ -45,7 +53,10 @@ fun ImageView.loadUrl(url: String) {
     }
 }
 
-@BindingAdapter("goneIfFalse")
-fun View.goneifFalse(isVisible: Boolean) {
+/**
+ * @param isVisible if true the visibility of View will be Visible else Gone.
+ */
+@BindingAdapter("visible")
+fun View.visibleIfTrue(isVisible: Boolean){
     visibility = if (isVisible) View.VISIBLE else View.GONE
 }

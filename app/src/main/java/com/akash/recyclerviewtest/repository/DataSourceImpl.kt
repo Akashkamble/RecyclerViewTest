@@ -1,7 +1,7 @@
 package com.akash.recyclerviewtest.repository
 
 import com.akash.recyclerviewtest.api.ApiService
-import com.akash.recyclerviewtest.api.Result
+import com.akash.recyclerviewtest.base.Result
 import com.akash.recyclerviewtest.api.data.Data
 import java.lang.Exception
 
@@ -15,10 +15,11 @@ class DataSourceImpl(private val apiService: ApiService) : DataSource {
             if (response.isSuccessful){
                 Result.Success(response.body()!!)
             } else {
+                // Pass error message got from the network call.
                 Result.Error("Something went wrong")
             }
         } catch (e : Exception){
-            Result.Error(e.localizedMessage)
+            Result.Error(e.localizedMessage ?: "Something went wrong")
         }
     }
 }

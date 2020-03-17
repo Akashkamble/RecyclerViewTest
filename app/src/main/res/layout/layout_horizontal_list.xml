@@ -5,7 +5,7 @@
     <data>
         <variable
             name="vm"
-            type="com.akash.recyclerviewtest.ui.HorizontalItem" />
+            type="com.akash.recyclerviewtest.rowmodels.HorizontalItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

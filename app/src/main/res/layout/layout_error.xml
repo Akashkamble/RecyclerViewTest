@@ -22,7 +22,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:goneIfFalse="@{errorState.isLoading}" />
+            app:visible="@{errorState.isLoading}" />
 
         <TextView
             android:id="@+id/tv_error"
@@ -31,7 +31,7 @@
             android:layout_marginTop="20dp"
             android:gravity="center_horizontal"
             android:text="@{errorState.errorMessage}"
-            app:goneIfFalse="@{!errorState.isLoading &amp;&amp; errorState.isError}"
+            app:visible="@{!errorState.isLoading &amp;&amp; errorState.isError}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/progress"
@@ -44,7 +44,7 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="@{() ->errorState.onRetry()}"
-            app:goneIfFalse="@{!errorState.isLoading &amp;&amp; errorState.isError &amp;&amp; errorState.showRetry}"
+            app:visible="@{!errorState.isLoading &amp;&amp; errorState.isError &amp;&amp; errorState.showRetry}"
             android:foreground="?attr/selectableItemBackground"
             android:paddingStart="20dp"
             android:paddingTop="10dp"

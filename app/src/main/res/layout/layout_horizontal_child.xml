@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.akash.recyclerviewtest.ui.HorizontalChildItem" />
+            type="com.akash.recyclerviewtest.rowmodels.HorizontalChildItem" />
     </data>
 
     <androidx.cardview.widget.CardView

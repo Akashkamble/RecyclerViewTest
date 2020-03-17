@@ -5,7 +5,8 @@ package com.akash.recyclerviewtest.base
  */
 
 /**
- * BaseRowModel for generic RecyclerView create recyclerView itemTypes by extending this class.
+ * BaseRowModel for generic RecyclerView.
+ * Create recyclerView itemTypes by extending this class.
  */
 abstract class BaseRowModel {
 

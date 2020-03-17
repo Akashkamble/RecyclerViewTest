@@ -6,7 +6,7 @@
     <data>
         <variable
             name="vm"
-            type="com.akash.recyclerviewtest.ui.LoadingItem" />
+            type="com.akash.recyclerviewtest.rowmodels.LoadingItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:goneIfFalse="@{vm.loading}"
+            app:visible="@{vm.loading}"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
         <TextView
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{vm.errorMessage}"
-            app:goneIfFalse="@{!vm.loading}"/>
+            app:visible="@{!vm.loading}"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:clickable="true"
             android:focusable="true"
             android:onClick="@{() ->vm.onRetry()}"
-            app:goneIfFalse="@{!vm.loading}"
+            app:visible="@{!vm.loading}"
             android:foreground="?attr/selectableItemBackground"
             android:paddingStart="20dp"
             android:paddingTop="10dp"

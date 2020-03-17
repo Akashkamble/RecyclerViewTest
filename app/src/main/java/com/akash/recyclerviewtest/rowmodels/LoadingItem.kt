@@ -1,4 +1,4 @@
-package com.akash.recyclerviewtest.ui
+package com.akash.recyclerviewtest.rowmodels
 
 import androidx.databinding.ObservableField
 import com.akash.recyclerviewtest.R

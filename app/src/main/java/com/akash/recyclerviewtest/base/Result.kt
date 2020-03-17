@@ -1,4 +1,4 @@
-package com.akash.recyclerviewtest.api
+package com.akash.recyclerviewtest.base
 
 /**
  * Created by Akash on 2020-03-16

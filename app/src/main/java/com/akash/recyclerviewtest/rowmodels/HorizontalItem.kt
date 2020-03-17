@@ -1,4 +1,4 @@
-package com.akash.recyclerviewtest.ui
+package com.akash.recyclerviewtest.rowmodels
 
 import androidx.lifecycle.MutableLiveData
 import com.akash.recyclerviewtest.R

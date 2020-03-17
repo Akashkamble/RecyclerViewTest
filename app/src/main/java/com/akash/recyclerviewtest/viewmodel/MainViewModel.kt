@@ -4,15 +4,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import com.akash.recyclerviewtest.api.Result
+import com.akash.recyclerviewtest.base.Result
 import com.akash.recyclerviewtest.api.data.Data
 import com.akash.recyclerviewtest.base.BaseRowModel
 import com.akash.recyclerviewtest.base.BaseViewModel
 import com.akash.recyclerviewtest.callbacks.ErrorStateRetryListener
 import com.akash.recyclerviewtest.callbacks.LoadMoreListener
 import com.akash.recyclerviewtest.repository.DataSource
+import com.akash.recyclerviewtest.rowmodels.LoadingItem
 import com.akash.recyclerviewtest.ui.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
