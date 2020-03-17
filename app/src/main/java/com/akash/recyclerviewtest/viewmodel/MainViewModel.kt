@@ -10,10 +10,7 @@ import com.akash.recyclerviewtest.base.BaseRowModel
 import com.akash.recyclerviewtest.base.BaseViewModel
 import com.akash.recyclerviewtest.repository.DataSource
 import com.akash.recyclerviewtest.ui.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * Created by Akash on 2020-03-16
@@ -34,8 +31,7 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
     private val mutableList = MutableLiveData<List<BaseRowModel>>().apply { value = emptyList() }
     private val loadingItem = LoadingItem()
     private var loadMoreData = false
-    val list: LiveData<List<BaseRowModel>>
-        get() = mutableList
+    fun getList(): LiveData<List<BaseRowModel>> = mutableList
 
     override fun handleAction(action: BaseAction) {
         when (action) {
@@ -46,8 +42,6 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
     private fun getDataForPage(page: Int) {
 
         viewModelScope.launch {
-            if (tempList.isNotEmpty()) tempList.add(loadingItem)
-            mutableList.postValue(tempList)
             val result = dataSource.getData(page)
             handleResult(result)
         }
@@ -57,10 +51,6 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
         loadMoreData = when (result) {
             is Result.Success -> {
                 makeList(result.data)
-                if (tempList.contains(loadingItem)) {
-                    tempList.remove(loadingItem)
-                    mutableList.postValue(tempList)
-                }
                 true
             }
             is Result.Error -> {
@@ -81,21 +71,30 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
                 horizontalBaseRowModel.add(HorizontalChildItem(element))
             }
         }
-        val list = mutableListOf<BaseRowModel>()
         for (element in verticalList) {
-            list.add(VerticalListItem(element))
-            if (list.size == 3 && horizontalList.isNotEmpty())
-                list.add(HorizontalItem(horizontalBaseRowModel))
-            if (list.size == 8) {
-                list.add(BannerItem(data.response.bannerImage))
+            if (tempList.size > 9 && tempList.size % 9 == 0) {
+                tempList.add(tempList.size, BannerItem(data.response.bannerImage))
+            }
+            tempList.add(VerticalListItem(element))
+            if (tempList.size == 3 && horizontalList.isNotEmpty())
+                tempList.add(HorizontalItem(horizontalBaseRowModel))
+            if (tempList.size == 8) {
+                tempList.add(BannerItem(data.response.bannerImage))
             }
         }
-        tempList.addAll(list)
+        if (tempList.contains(loadingItem)) {
+            tempList.remove(loadingItem)
+        }
         mutableList.value = tempList
+        Log.d(TAG, "tempList -> $tempList")
     }
 
     override fun onLoadMore() {
         if (page <= 4 && loadMoreData)
-            getDataForPage(page++)
+            if (tempList.isNotEmpty() && !tempList.contains(loadingItem)) {
+                tempList.add(tempList.size, loadingItem)
+                mutableList.value = tempList
+            }
+        getDataForPage(page++)
     }
 }
