@@ -16,8 +16,4 @@ data class HorizontalItem(
     override fun setLayoutID() {
         layoutID = R.layout.layout_horizontal_list
     }
-
-    override fun equals(other: Any?): Boolean {
-        return if(other is HorizontalItem) itemList == other.itemList else false
-    }
 }

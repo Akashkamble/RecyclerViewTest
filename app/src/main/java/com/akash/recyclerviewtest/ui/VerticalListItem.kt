@@ -13,20 +13,9 @@ data class VerticalListItem(
 ) : BaseRowModel() {
 
     val language = MutableLiveData<String>().apply { value = item.name }
-    val languaImage = MutableLiveData<String>().apply { value = item.icon }
+    val languageImage = MutableLiveData<String>().apply { value = item.icon }
 
     override fun setLayoutID() {
         layoutID = R.layout.layout_vertical_item
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if(other is VerticalListItem) language == other.languaImage else false
-    }
-
-    override fun hashCode(): Int {
-        var result = item.hashCode()
-        result = 31 * result + language.hashCode()
-        result = 31 * result + languaImage.hashCode()
-        return result
     }
 }

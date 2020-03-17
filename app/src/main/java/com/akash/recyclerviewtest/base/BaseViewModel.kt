@@ -9,6 +9,10 @@ import kotlinx.coroutines.plus
 /**
  * Created by Akash on 2020-03-16
  */
+
+/**
+ * BaseViewModel to clear the job when ViewModels instance is destroyed
+ */
 abstract class BaseViewModel : ViewModel() {
     val TAG = this.javaClass.simpleName
 
@@ -19,6 +23,4 @@ abstract class BaseViewModel : ViewModel() {
         super.onCleared()
         job.cancel()
     }
-
-    abstract fun handleAction(action: BaseAction)
 }

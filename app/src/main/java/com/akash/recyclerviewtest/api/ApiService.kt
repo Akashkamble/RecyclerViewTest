@@ -17,9 +17,10 @@ interface ApiService {
     ): Response<Data.LanguageData>
 
     companion object {
+        private const val BASE_URL = "https://www.coupondunia.in"
         operator fun invoke(): ApiService {
             return Retrofit.Builder()
-                .baseUrl("https://www.coupondunia.in")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(MoshiConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)

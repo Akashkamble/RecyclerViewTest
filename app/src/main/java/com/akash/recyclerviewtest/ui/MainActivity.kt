@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Do this using Dependency Injection
+        // this must be using Dependency Injection for apps scalability.
         factory = ViewModelFactory(DataSourceImpl(ApiService()))
 
         viewModel = ViewModelProvider(this, factory)[MainViewModel::class.java]

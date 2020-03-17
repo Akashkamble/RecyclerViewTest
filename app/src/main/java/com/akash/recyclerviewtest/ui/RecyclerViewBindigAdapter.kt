@@ -14,6 +14,10 @@ import com.akash.recyclerviewtest.BR
 /**
  * Created by Akash on 2020-03-16
  */
+
+/**
+ * This is generic Recyclerview for list of BaseRowModels implemented using databinding
+ */
 class RecyclerViewBindingAdapter(var data: List<BaseRowModel>, val listener: LoadMoreListener?) :
     RecyclerView.Adapter<RecyclerViewBindingAdapter.ViewHolder>() {
 

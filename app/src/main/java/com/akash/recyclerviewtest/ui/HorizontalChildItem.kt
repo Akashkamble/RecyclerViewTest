@@ -18,5 +18,4 @@ class HorizontalChildItem(
     override fun setLayoutID() {
         layoutID = R.layout.layout_horizontal_child
     }
-
 }

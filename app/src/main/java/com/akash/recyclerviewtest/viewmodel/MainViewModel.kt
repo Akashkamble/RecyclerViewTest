@@ -3,13 +3,14 @@ package com.akash.recyclerviewtest.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.akash.recyclerviewtest.api.Result
 import com.akash.recyclerviewtest.api.data.Data
-import com.akash.recyclerviewtest.base.BaseAction
 import com.akash.recyclerviewtest.base.BaseRowModel
 import com.akash.recyclerviewtest.base.BaseViewModel
 import com.akash.recyclerviewtest.repository.DataSource
 import com.akash.recyclerviewtest.ui.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -17,11 +18,8 @@ import kotlinx.coroutines.launch
  */
 class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadMoreListener {
 
-    sealed class Action : BaseAction {
-        data class GetDataForPage(val page: Int) : Action()
-    }
-
     private var page = 1
+    private var totalPageCount = 0
 
     init {
         getDataForPage(page++)
@@ -31,18 +29,19 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
     private val mutableList = MutableLiveData<List<BaseRowModel>>().apply { value = emptyList() }
     private val loadingItem = LoadingItem()
     private var loadMoreData = false
-    fun getList(): LiveData<List<BaseRowModel>> = mutableList
-
-    override fun handleAction(action: BaseAction) {
-        when (action) {
-            is Action.GetDataForPage -> getDataForPage(action.page)
-        }
+    private var totalCount = MutableLiveData<Int>().apply { value = 0 }
+    private val totalOfferTillNow = MutableLiveData<Int>().apply { value = 0 }
+    val offerCountLiveData: LiveData<String> = Transformations.map(totalOfferTillNow) {
+        "Showing offer ${totalOfferTillNow.value} of ${totalCount.value}"
     }
+
+    fun getList(): LiveData<List<BaseRowModel>> = mutableList
 
     private fun getDataForPage(page: Int) {
 
         viewModelScope.launch {
             val result = dataSource.getData(page)
+//            delay(1000) to check loading
             handleResult(result)
         }
     }
@@ -64,6 +63,9 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
     private fun makeList(data: Data.LanguageData) {
         Log.d(TAG, "result -> $data")
         val verticalList = data.response.list
+        totalOfferTillNow.postValue(totalOfferTillNow.value!! + verticalList.size)
+        totalCount.postValue(data.response.totalItems)
+        totalPageCount = data.response.totalPages
         val horizontalList = data.response.horizontalList ?: emptyList()
         val horizontalBaseRowModel = mutableListOf<HorizontalChildItem>()
         if (horizontalList.isNotEmpty()) {
@@ -90,7 +92,7 @@ class MainViewModel(private val dataSource: DataSource) : BaseViewModel(), LoadM
     }
 
     override fun onLoadMore() {
-        if (page <= 4 && loadMoreData)
+        if (page <= totalPageCount && loadMoreData)
             if (tempList.isNotEmpty() && !tempList.contains(loadingItem)) {
                 tempList.add(tempList.size, loadingItem)
                 mutableList.value = tempList
