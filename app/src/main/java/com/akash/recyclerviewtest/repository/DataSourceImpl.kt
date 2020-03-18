@@ -19,7 +19,11 @@ class DataSourceImpl(private val apiService: ApiService) : DataSource {
                 Result.Error("Something went wrong")
             }
         } catch (e : Exception){
-            Result.Error(e.localizedMessage ?: "Something went wrong")
+            var errorMessage = e.localizedMessage
+            if (e.localizedMessage!!.contains("Unable to resolve host")) {
+                errorMessage = "No internet connection"
+            }
+            Result.Error(errorMessage ?: "Something went wrong")
         }
     }
 }
