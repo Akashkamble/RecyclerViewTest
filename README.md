@@ -1,10 +1,13 @@
 # RecycleViewTest
 
-This repo contains implementation of multiple ItemType RecyclerView and basic pagination logic.
+This project contains implementation of multiple ItemType RecyclerView and basic pagination logic.
 
 ## Architecture
 
 MVVM with repository layer.
+
+![Architectural Diagram](https://user-images.githubusercontent.com/13314984/76924374-24670500-68fc-11ea-97b8-bd1e9c1bd80d.png)
+
 
 ## Libraries Used
 
